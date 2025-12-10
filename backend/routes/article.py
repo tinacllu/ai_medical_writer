@@ -11,7 +11,7 @@ def generate_article():
         return jsonify({"error": "No input provided"}), 400
     
     try: 
-        article = generate_article_openai(data["input"], True)
+        article = generate_article_openai(data["input"], data["brief"])
         return jsonify({"article": article})
     except Exception as e:
         return jsonify({"error": str(e)})
