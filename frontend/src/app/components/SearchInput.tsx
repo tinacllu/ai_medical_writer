@@ -65,10 +65,7 @@ export const SearchInput = ({
           <p className="flex">Detailed</p>
         </label>
       </div>
-      <button
-        className="bg-pastel-primary text-pastel-text px-6 py-2 rounded-xl hover:bg-pastel-secondary w-sm"
-        onClick={generateArticle}
-      >
+      <button className="btn" onClick={generateArticle} disabled={input === ""}>
         Generate Article
       </button>
     </div>

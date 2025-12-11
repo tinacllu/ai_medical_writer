@@ -10,7 +10,9 @@ export const MainContainer = () => {
   return (
     <div>
       <SearchInput input={input} setInput={setInput} setArticle={setArticle} />
-      <div> {article && <ArticleContent article={article} />}</div>
+      <div>
+        {article && <ArticleContent disease={input} article={article} />}
+      </div>
     </div>
   );
 };

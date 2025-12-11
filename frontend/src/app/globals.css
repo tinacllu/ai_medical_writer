@@ -1,6 +1,5 @@
 @import "tailwindcss";
 
-
 @theme {
     --color-pastel-bg: oklch(0.9687 0.0086 44.89);  
     --color-pastel-white: oklch(0.99 0.01 81);     
@@ -13,4 +12,8 @@
     --color-pastel-error: oklch(0.8195 0.1011 23.21);  
 
     --font-poppins: Poppins, sans-serif;
+}
+
+.btn {
+    @apply bg-pastel-primary text-pastel-text px-6 py-2 rounded-xl hover:bg-pastel-secondary w-sm
 }

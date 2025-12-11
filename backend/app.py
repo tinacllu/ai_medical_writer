@@ -3,9 +3,8 @@ from flask_cors import CORS
 from routes.article import article_bp
 
 app = Flask(__name__)
-CORS(app)  # Allow cross-origin requests
+CORS(app) 
 
-# Register API blueprint
 app.register_blueprint(article_bp, url_prefix="/api")
 
 if __name__ == "__main__":
