@@ -24,6 +24,7 @@ export const ArticleContent = ({
       return;
     }
 
+    console.log("disease", disease);
     const blob = await res.blob();
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -76,9 +77,16 @@ export const ArticleContent = ({
         </button>
       </div>
       {isLoading ? (
-        <p>Generating Disease Overview...</p>
+        <h2>Generating Disease Overview...</h2>
       ) : (
-        <ReactMarkdown>{article}</ReactMarkdown>
+        <div>
+          {article ? (
+            <h2 className="text-2xl font-bold pb-8">{disease}</h2>
+          ) : (
+            <h2>Search a disease to learn more.</h2>
+          )}
+          <ReactMarkdown>{article}</ReactMarkdown>
+        </div>
       )}
     </div>
   );

@@ -7,19 +7,20 @@ import { mutate } from "swr";
 import { useSearchHistoryContext } from "../contexts/SearchHistoryContext";
 
 interface SearchInputProps {
-  input: string;
-  setInput: Dispatch<SetStateAction<string>>;
+  disease: string;
+  setDisease: Dispatch<SetStateAction<string>>;
   setArticle: Dispatch<SetStateAction<string>>;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
 }
 
 export const SearchInput = ({
-  input,
-  setInput,
+  disease,
+  setDisease,
   setArticle,
   setIsLoading,
 }: SearchInputProps) => {
   const [detailLevel, setDetailLevel] = useState(DETAIL_LEVELS.BRIEF);
+  const [input, setInput] = useState("");
   const { history, setHistory } = useSearchHistoryContext();
 
   const { trigger: generateArticle, isMutating } = useSWRMutation<
@@ -42,10 +43,11 @@ export const SearchInput = ({
   });
 
   const handleGenerate = async () => {
+    setArticle("");
     setIsLoading(true);
     if (input) {
       const formattedInput = input.trim().toLocaleLowerCase();
-
+      setDisease(input);
       try {
         const data = await generateArticle({
           input: formattedInput,
@@ -53,8 +55,8 @@ export const SearchInput = ({
         });
         mutate(`${formattedInput}-${detailLevel}`, data);
         setHistory([...history, `${formattedInput}-${detailLevel}`]);
-        setInput("");
         setArticle(data.article);
+        setInput("");
         setIsLoading(false);
       } catch (err) {
         console.error("Error generating article:", err);
@@ -67,7 +69,7 @@ export const SearchInput = ({
   };
 
   return (
-    <div className="flex flex-col justify-start gap-2">
+    <form className="flex flex-col justify-start gap-2">
       <div className="flex flex-row justify-between gap-2">
         <input
           className="bg-cream-light p-4 rounded-lg focus:outline-green-med grow h-12"
@@ -110,6 +112,6 @@ export const SearchInput = ({
           <p className="text-brown-dark">Detailed</p>
         </label>
       </div>
-    </div>
+    </form>
   );
 };

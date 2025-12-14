@@ -16,7 +16,7 @@ export const SidebarContainer = () => {
         <Sidebar isCollapsed={isCollapsed} />
       </div>
       <button
-        className="rounded-3xl p-2 text-cream-light h-10 my-7 bg-orange-med"
+        className="rounded-3xl p-2 text-cream-light h-10 my-7 bg-orange-med cursor-pointer"
         onClick={() => setIsCollapsed(!isCollapsed)}
       >
         {isCollapsed ? (

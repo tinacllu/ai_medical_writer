@@ -3,10 +3,8 @@ import { ArticleContent } from "./ArticleContent";
 import { SearchInput } from "./SearchInput";
 
 export const MainContainer = () => {
-  const [input, setInput] = useState("");
-  const [article, setArticle] = useState(
-    "Search a disease name to get started"
-  );
+  const [disease, setDisease] = useState("");
+  const [article, setArticle] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   return (
@@ -16,19 +14,17 @@ export const MainContainer = () => {
       </div>
       <div className="bg-primary-med rounded-xl rounded-tl-none p-8">
         <SearchInput
-          input={input}
-          setInput={setInput}
+          disease={disease}
+          setDisease={setDisease}
           setArticle={setArticle}
           setIsLoading={setIsLoading}
         />
         <div>
-          {article && (
-            <ArticleContent
-              disease={input}
-              article={article}
-              isLoading={isLoading}
-            />
-          )}
+          <ArticleContent
+            disease={disease}
+            article={article}
+            isLoading={isLoading}
+          />
         </div>
       </div>
     </div>
