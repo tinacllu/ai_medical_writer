@@ -1,18 +1,24 @@
-import { EllipsisHorizontalIcon } from "@heroicons/react/16/solid";
-import { useState } from "react";
-import { MenuPopup } from "./MenuPopup";
+import Link from "next/link";
 
-export const SidebarItem = () => {
-  const [isOpen, setIsOpen] = useState(false);
+interface SidebarItemProps {
+  isCollapsed: boolean;
+  article: string;
+  disease: string;
+}
 
+export const SidebarItem = ({
+  isCollapsed,
+  article,
+  disease,
+}: SidebarItemProps) => {
   return (
-    <div>
-      <p>Item 1</p>
-      <button onClick={() => setIsOpen(!isOpen)}>
-        <EllipsisHorizontalIcon className="h-5 w-5 text-pastel-text" />
+    <Link
+      href={`/article/${disease}`}
+      className="bg-orange-med flex justify-center align-center py-2 px-4 rounded-xl"
+    >
+      <button onClick={() => console.log("hi")}>
+        {isCollapsed ? disease[0].toLocaleUpperCase() : disease}
       </button>
-
-      {isOpen && <MenuPopup />}
-    </div>
+    </Link>
   );
 };

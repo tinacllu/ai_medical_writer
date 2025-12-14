@@ -1,9 +1,9 @@
 "use client";
 
-import { HomePage } from "./components/HomePage";
+import { MainContainer } from "./components/MainContainer";
 
 function App() {
-  return <HomePage />;
+  return <MainContainer />;
 }
 
 export default App;

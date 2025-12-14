@@ -24,23 +24,37 @@ export const SearchInput = ({
       }),
     });
     const data = await res.json();
+
     setArticle(data.article);
   };
 
   const handleDetailLevelChange = (e: ChangeEvent<HTMLInputElement>) => {
     setDetailLevel(e.target.value);
   };
+
   return (
-    <div className="flex flex-col justify-start">
-      <input
-        className="bg-pastel-white p-4 rounded-lg focus:outline-none"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        placeholder="Disease name"
-        required
-      />
-      <div className="flex gap-8">
-        <label className="flex flex-row gap-2">
+    <div className="flex flex-col justify-start gap-2">
+      <div className="flex flex-row justify-between gap-2">
+        <input
+          className="bg-cream-light p-4 rounded-lg focus:outline-primary-med grow h-12"
+          id="search"
+          name="search"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Disease name"
+          required
+        />
+
+        <button
+          className="button"
+          onClick={generateArticle}
+          disabled={input === ""}
+        >
+          Generate Article
+        </button>
+      </div>
+      <div className="flex gap-8 pb-8">
+        <label className="flex flex-row gap-2 text-primary-med focus:ring-primary-med">
           <input
             className="flex"
             type="radio"
@@ -65,9 +79,6 @@ export const SearchInput = ({
           <p className="flex">Detailed</p>
         </label>
       </div>
-      <button className="btn" onClick={generateArticle} disabled={input === ""}>
-        Generate Article
-      </button>
     </div>
   );
 };
