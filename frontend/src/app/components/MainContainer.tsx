@@ -3,10 +3,11 @@ import { ArticleContent } from "./ArticleContent";
 import { SearchInput } from "./SearchInput";
 
 export const MainContainer = () => {
-  const text =
-    "Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.";
   const [input, setInput] = useState("");
-  const [article, setArticle] = useState(text);
+  const [article, setArticle] = useState(
+    "Search a disease name to get started"
+  );
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <div className="flex flex-col grow p-8">
@@ -18,9 +19,16 @@ export const MainContainer = () => {
           input={input}
           setInput={setInput}
           setArticle={setArticle}
+          setIsLoading={setIsLoading}
         />
         <div>
-          {article && <ArticleContent disease={input} article={article} />}
+          {article && (
+            <ArticleContent
+              disease={input}
+              article={article}
+              isLoading={isLoading}
+            />
+          )}
         </div>
       </div>
     </div>

@@ -2,55 +2,63 @@ import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { DETAIL_LEVELS } from "../constants/detailLevels";
 import { useState } from "react";
 import useSWRMutation from "swr/mutation";
+import { GenerateArticleBody } from "../api/generate/route";
+import { mutate } from "swr";
+import { useSearchHistoryContext } from "../contexts/SearchHistoryContext";
 
 interface SearchInputProps {
   input: string;
   setInput: Dispatch<SetStateAction<string>>;
   setArticle: Dispatch<SetStateAction<string>>;
+  setIsLoading: Dispatch<SetStateAction<boolean>>;
 }
 
 export const SearchInput = ({
   input,
   setInput,
   setArticle,
+  setIsLoading,
 }: SearchInputProps) => {
   const [detailLevel, setDetailLevel] = useState(DETAIL_LEVELS.BRIEF);
+  const { history, setHistory } = useSearchHistoryContext();
 
   const { trigger: generateArticle, isMutating } = useSWRMutation<
     { article: string },
     { message: string },
     string,
-    { input: string; brief: boolean }
-  >(
-    "/api/generate",
-    async (url, { arg }) => {
-      const res = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(arg),
-      });
+    GenerateArticleBody
+  >("/api/generate", async (url, { arg }) => {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(arg),
+    });
 
-      if (!res.ok) {
-        throw new Error("Failed to generate article");
-      }
+    if (!res.ok) {
+      throw new Error("Failed to generate article");
+    }
 
-      return res.json();
-    },
-    { populateCache: true }
-  );
+    return res.json();
+  });
 
   const handleGenerate = async () => {
-    if (!input) return;
+    setIsLoading(true);
+    if (input) {
+      const formattedInput = input.trim().toLocaleLowerCase();
 
-    try {
-      const data = await generateArticle({
-        input,
-        brief: detailLevel === DETAIL_LEVELS.BRIEF,
-      });
-      setInput("");
-      setArticle(data.article);
-    } catch (err) {
-      console.error("Error generating article:", err);
+      try {
+        const data = await generateArticle({
+          input: formattedInput,
+          brief: detailLevel === DETAIL_LEVELS.BRIEF,
+        });
+        mutate(`${formattedInput}-${detailLevel}`, data);
+        setHistory([...history, `${formattedInput}-${detailLevel}`]);
+        setInput("");
+        setArticle(data.article);
+        setIsLoading(false);
+      } catch (err) {
+        console.error("Error generating article:", err);
+      }
     }
   };
 
@@ -73,9 +81,9 @@ export const SearchInput = ({
         <button
           className="button border-green-light border-1"
           onClick={handleGenerate}
-          disabled={input === ""}
+          disabled={input === "" || isMutating}
         >
-          {isMutating ? "Generating" : "Generate Article"}
+          {isMutating ? "Generating..." : "Generate Article"}
         </button>
       </div>
       <div className="flex gap-8 pb-8">

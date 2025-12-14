@@ -1,23 +1,14 @@
 import { SidebarItem } from "./SidebarItem";
 import { ClockIcon } from "@heroicons/react/24/outline";
+import { useSearchHistoryContext } from "../../contexts/SearchHistoryContext";
 
-interface SidebarItemProps {
+interface SidebarProps {
   isCollapsed: boolean;
 }
 
-export const Sidebar = ({ isCollapsed }: SidebarItemProps) => {
-  const placeholders = [
-    {
-      disease: "asthma",
-      article:
-        "Asthma - Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.",
-    },
-    {
-      disease: "anemia",
-      article:
-        "Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.",
-    },
-  ];
+export const Sidebar = ({ isCollapsed }: SidebarProps) => {
+  const { history } = useSearchHistoryContext();
+
   return (
     <div>
       <div className="text-primary-light flex flex-row gap-4">
@@ -27,12 +18,11 @@ export const Sidebar = ({ isCollapsed }: SidebarItemProps) => {
         )}
       </div>
       <div className="flex flex-col gap-4 py-4">
-        {placeholders.map((item, index) => (
+        {(history ?? []).map((disease, index) => (
           <SidebarItem
-            key={item.disease + index}
+            key={disease + index}
             isCollapsed={isCollapsed}
-            disease={item.disease}
-            article={item.article}
+            disease={disease}
           />
         ))}
       </div>

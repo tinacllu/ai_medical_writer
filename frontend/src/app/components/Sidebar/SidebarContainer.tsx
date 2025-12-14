@@ -7,7 +7,7 @@ export const SidebarContainer = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-100dvh">
       <div
         className={`bg-brown-dark ${
           isCollapsed ? "py-8 px-4" : "p-8"

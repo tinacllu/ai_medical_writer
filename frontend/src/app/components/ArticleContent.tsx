@@ -4,15 +4,25 @@ import { ArrowDownTrayIcon } from "@heroicons/react/24/solid";
 interface ArticleContentProps {
   disease: string;
   article: string;
+  isLoading: boolean;
 }
 
-export const ArticleContent = ({ disease, article }: ArticleContentProps) => {
+export const ArticleContent = ({
+  disease,
+  article,
+  isLoading,
+}: ArticleContentProps) => {
   const downloadWordDoc = async () => {
     const res = await fetch("api/download/word", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ disease, article }),
     });
+
+    if (!res.ok) {
+      alert("Failed to download PDF");
+      return;
+    }
 
     const blob = await res.blob();
     const url = URL.createObjectURL(blob);
@@ -65,8 +75,11 @@ export const ArticleContent = ({ disease, article }: ArticleContentProps) => {
           <p>PDF</p>
         </button>
       </div>
-
-      <ReactMarkdown>{article}</ReactMarkdown>
+      {isLoading ? (
+        <p>Generating Disease Overview...</p>
+      ) : (
+        <ReactMarkdown>{article}</ReactMarkdown>
+      )}
     </div>
   );
 };
