@@ -1,6 +1,5 @@
 import ReactMarkdown from "react-markdown";
-import { ChevronDownIcon } from "@heroicons/react/24/solid";
-import { useState } from "react";
+import { ArrowDownTrayIcon } from "@heroicons/react/24/solid";
 
 interface ArticleContentProps {
   disease: string;
@@ -8,8 +7,6 @@ interface ArticleContentProps {
 }
 
 export const ArticleContent = ({ disease, article }: ArticleContentProps) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
   const downloadWordDoc = async () => {
     const res = await fetch("api/download/word", {
       method: "POST",
@@ -17,39 +14,58 @@ export const ArticleContent = ({ disease, article }: ArticleContentProps) => {
       body: JSON.stringify({ disease, article }),
     });
 
-    console.log(res);
     const blob = await res.blob();
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
     a.download = `${disease}.docx`;
     a.click();
+
+    window.URL.revokeObjectURL(url);
+  };
+
+  const downloadPdf = async () => {
+    const res = await fetch("api/download/pdf", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ disease, article }),
+    });
+
+    if (!res.ok) {
+      alert("Failed to download PDF");
+      return;
+    }
+
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${disease}.pdf`;
+    a.click();
+
+    window.URL.revokeObjectURL(url);
   };
 
   return (
     <div className="bg-cream-light p-8 mx-0 rounded-lg shadow-md flex flex-col gap-8">
-      <button
-        onClick={() => setIsMenuOpen(!isMenuOpen)}
-        className="flex flex-row w-55 relative self-end button"
-      >
-        <p className="flex w-7/8">Download Article</p>
-        <ChevronDownIcon width={24} height={24} className="flex" />
-      </button>
-      {isMenuOpen && (
-        <div className="fixed self-end mt-10">
-          <div className="flex flex-col bg-orange-light w-55">
-            <button
-              className="flex w-55 text-primary-dark bg-transparent"
-              onClick={downloadWordDoc}
-            >
-              Download as Word
-            </button>
-            <button className="flex w-55 text-primary-dark bg-transparent">
-              Download as PDF
-            </button>
-          </div>
-        </div>
-      )}
+      <div className="flex flex-row gap-8 justify-end text-primary-dark">
+        <button
+          className="flex gap-2 hover:font-bold cursor-pointer"
+          onClick={downloadWordDoc}
+        >
+          <ArrowDownTrayIcon width={20} height={20} />
+          <p>Word</p>
+        </button>
+        <button
+          className="flex gap-2 hover:font-bold cursor-pointer"
+          onClick={downloadPdf}
+        >
+          <ArrowDownTrayIcon width={20} height={20} />
+          <p>PDF</p>
+        </button>
+      </div>
+
       <ReactMarkdown>{article}</ReactMarkdown>
     </div>
   );

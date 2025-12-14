@@ -36,7 +36,7 @@ export const SearchInput = ({
     <div className="flex flex-col justify-start gap-2">
       <div className="flex flex-row justify-between gap-2">
         <input
-          className="bg-cream-light p-4 rounded-lg focus:outline-primary-med grow h-12"
+          className="bg-cream-light p-4 rounded-lg focus:outline-green-med grow h-12"
           id="search"
           name="search"
           value={input}
@@ -46,7 +46,7 @@ export const SearchInput = ({
         />
 
         <button
-          className="button"
+          className="button border-green-light border-1"
           onClick={generateArticle}
           disabled={input === ""}
         >
@@ -54,9 +54,8 @@ export const SearchInput = ({
         </button>
       </div>
       <div className="flex gap-8 pb-8">
-        <label className="flex flex-row gap-2 text-primary-med focus:ring-primary-med">
+        <label className="flex flex-row gap-2">
           <input
-            className="flex"
             type="radio"
             id={DETAIL_LEVELS.BRIEF}
             name="detailLevel"
@@ -64,11 +63,10 @@ export const SearchInput = ({
             checked={detailLevel === DETAIL_LEVELS.BRIEF}
             onChange={handleDetailLevelChange}
           />
-          <p className="flex">Brief</p>
+          <p className="text-brown-dark">Brief</p>
         </label>
         <label className="flex flex-row gap-2">
           <input
-            className="flex"
             type="radio"
             id={DETAIL_LEVELS.DETAILED}
             name="detailLevel"
@@ -76,7 +74,7 @@ export const SearchInput = ({
             checked={detailLevel === DETAIL_LEVELS.DETAILED}
             onChange={handleDetailLevelChange}
           />
-          <p className="flex">Detailed</p>
+          <p className="text-brown-dark">Detailed</p>
         </label>
       </div>
     </div>
