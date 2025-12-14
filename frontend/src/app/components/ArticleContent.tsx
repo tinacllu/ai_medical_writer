@@ -13,14 +13,14 @@ export const ArticleContent = ({
   isLoading,
 }: ArticleContentProps) => {
   const downloadWordDoc = async () => {
-    const res = await fetch("api/download/word", {
+    const res = await fetch("/api/download/word", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ disease, article }),
     });
 
     if (!res.ok) {
-      alert("Failed to download PDF");
+      alert("Failed to download Word document");
       return;
     }
 
@@ -35,7 +35,7 @@ export const ArticleContent = ({
   };
 
   const downloadPdf = async () => {
-    const res = await fetch("api/download/pdf", {
+    const res = await fetch("/api/download/pdf", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ disease, article }),
