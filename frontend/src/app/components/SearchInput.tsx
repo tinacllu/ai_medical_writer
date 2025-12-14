@@ -1,6 +1,7 @@
 import { ChangeEvent, Dispatch, SetStateAction } from "react";
 import { DETAIL_LEVELS } from "../constants/detailLevels";
 import { useState } from "react";
+import useSWRMutation from "swr/mutation";
 
 interface SearchInputProps {
   input: string;
@@ -14,18 +15,43 @@ export const SearchInput = ({
   setArticle,
 }: SearchInputProps) => {
   const [detailLevel, setDetailLevel] = useState(DETAIL_LEVELS.BRIEF);
-  const generateArticle = async () => {
-    const res = await fetch("/api/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+
+  const { trigger: generateArticle, isMutating } = useSWRMutation<
+    { article: string },
+    { message: string },
+    string,
+    { input: string; brief: boolean }
+  >(
+    "/api/generate",
+    async (url, { arg }) => {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(arg),
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to generate article");
+      }
+
+      return res.json();
+    },
+    { populateCache: true }
+  );
+
+  const handleGenerate = async () => {
+    if (!input) return;
+
+    try {
+      const data = await generateArticle({
         input,
         brief: detailLevel === DETAIL_LEVELS.BRIEF,
-      }),
-    });
-    const data = await res.json();
-
-    setArticle(data.article);
+      });
+      setInput("");
+      setArticle(data.article);
+    } catch (err) {
+      console.error("Error generating article:", err);
+    }
   };
 
   const handleDetailLevelChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -44,13 +70,12 @@ export const SearchInput = ({
           placeholder="Disease name"
           required
         />
-
         <button
           className="button border-green-light border-1"
-          onClick={generateArticle}
+          onClick={handleGenerate}
           disabled={input === ""}
         >
-          Generate Article
+          {isMutating ? "Generating" : "Generate Article"}
         </button>
       </div>
       <div className="flex gap-8 pb-8">
