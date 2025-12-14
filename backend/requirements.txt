@@ -1,6 +1,7 @@
 Flask
 flask-cors
-dotenv
+gunicorn
+python-dotenv
 openai
 python-docx
 fpdf2
