@@ -17,7 +17,10 @@ export const SidebarItem = ({ isCollapsed, disease }: SidebarItemProps) => {
         href={`/article/${disease}`}
         className="bg-orange-med flex justify-center align-center py-2 px-4 rounded-xl hover:bg-orange-dark"
       >
-        <button className="cursor-pointer w-45" title={disease}>
+        <button
+          className={`cursor-pointer ${isCollapsed ? "" : "w-45"}`}
+          title={disease}
+        >
           {isCollapsed ? disease[0].toLocaleUpperCase() : disease}
         </button>
       </Link>
