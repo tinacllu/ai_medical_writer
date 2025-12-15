@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { HomePage } from "./components/HomePage";
-import { SearchHistoryProvider } from "./contexts/SearchHistoryContext";
 
 export const metadata: Metadata = {
   title: "AI Medical Writer",
