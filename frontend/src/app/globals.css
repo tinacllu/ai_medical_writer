@@ -37,6 +37,6 @@
     }
 
     .download {
-        @apply text-cream-light
+        @apply flex gap-2 hover:font-bold cursor-pointer disabled:cursor-not-allowed disabled:text-primary-light
     }
 }

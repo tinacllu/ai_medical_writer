@@ -62,18 +62,28 @@ export const ArticleContent = ({
     <div className="bg-cream-light p-8 mx-0 rounded-lg shadow-md flex flex-col gap-8">
       <div className="flex flex-row gap-8 justify-end text-primary-dark">
         <button
-          className="flex gap-2 hover:font-bold cursor-pointer"
+          className={`download ${
+            !disease || !article ? "hover:font-normal" : ""
+          }`}
           onClick={downloadWordDoc}
+          disabled={!disease || !article}
         >
           <ArrowDownTrayIcon width={20} height={20} />
-          <p>Word</p>
+          <p className={!disease || !article ? "text-primary-light" : ""}>
+            Word
+          </p>
         </button>
         <button
-          className="flex gap-2 hover:font-bold cursor-pointer"
+          className={`download ${
+            !disease || !article ? "hover:font-normal" : ""
+          }`}
           onClick={downloadPdf}
+          disabled={!article}
         >
           <ArrowDownTrayIcon width={20} height={20} />
-          <p>PDF</p>
+          <p className={!disease || !article ? "text-primary-light" : ""}>
+            PDF
+          </p>
         </button>
       </div>
       {isLoading ? (
@@ -81,7 +91,7 @@ export const ArticleContent = ({
       ) : (
         <div>
           {article ? (
-            <h2 className="text-2xl font-bold pb-8">{disease}</h2>
+            <h2 className="text-2xl font-bold pb-8">Search term: {disease}</h2>
           ) : (
             <h2>Search a disease to learn more.</h2>
           )}

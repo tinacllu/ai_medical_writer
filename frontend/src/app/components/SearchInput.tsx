@@ -7,20 +7,21 @@ import { mutate } from "swr";
 import { useSearchHistoryContext } from "../contexts/SearchHistoryContext";
 
 interface SearchInputProps {
-  disease: string;
   setDisease: Dispatch<SetStateAction<string>>;
   setArticle: Dispatch<SetStateAction<string>>;
   setIsLoading: Dispatch<SetStateAction<boolean>>;
 }
 
 export const SearchInput = ({
-  disease,
   setDisease,
   setArticle,
   setIsLoading,
 }: SearchInputProps) => {
-  const [detailLevel, setDetailLevel] = useState(DETAIL_LEVELS.BRIEF);
-  const [input, setInput] = useState("");
+  const [formData, setFormData] = useState({
+    input: "",
+    detailLevel: DETAIL_LEVELS.BRIEF,
+  });
+
   const { history, setHistory } = useSearchHistoryContext();
 
   const { trigger: generateArticle, isMutating } = useSWRMutation<
@@ -42,21 +43,22 @@ export const SearchInput = ({
     return res.json();
   });
 
-  const handleGenerate = async () => {
+  const handleGenerate = async (e: React.FormEvent) => {
+    e.preventDefault();
     setArticle("");
     setIsLoading(true);
-    if (input) {
-      const formattedInput = input.trim().toLocaleLowerCase();
-      setDisease(input);
+    if (formData.input) {
+      const formattedInput = formData.input.trim().toLocaleLowerCase();
+      setDisease(formData.input);
       try {
         const data = await generateArticle({
           input: formattedInput,
-          brief: detailLevel === DETAIL_LEVELS.BRIEF,
+          brief: formData.detailLevel === DETAIL_LEVELS.BRIEF,
         });
-        mutate(`${formattedInput}-${detailLevel}`, data);
-        setHistory([...history, `${formattedInput}-${detailLevel}`]);
+        mutate(`${formattedInput}-${formData.detailLevel}`, data);
+        setHistory([...history, `${formattedInput}-${formData.detailLevel}`]);
         setArticle(data.article);
-        setInput("");
+        setFormData({ input: "", detailLevel: DETAIL_LEVELS.BRIEF });
         setIsLoading(false);
       } catch (err) {
         console.error("Error generating article:", err);
@@ -64,27 +66,26 @@ export const SearchInput = ({
     }
   };
 
-  const handleDetailLevelChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setDetailLevel(e.target.value);
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   return (
-    <form className="flex flex-col justify-start gap-2">
+    <form
+      onSubmit={handleGenerate}
+      className="flex flex-col justify-start gap-2"
+    >
       <div className="flex flex-row justify-between gap-2">
         <input
           className="bg-cream-light p-4 rounded-lg focus:outline-green-med grow h-12"
-          id="search"
-          name="search"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
+          id="input"
+          name="input"
+          value={formData.input}
+          onChange={handleChange}
           placeholder="Disease name"
           required
         />
-        <button
-          className="button border-green-light border-1"
-          onClick={handleGenerate}
-          disabled={input === "" || isMutating}
-        >
+        <button className="button border-green-light border-1" type="submit">
           {isMutating ? "Generating..." : "Generate Article"}
         </button>
       </div>
@@ -95,8 +96,8 @@ export const SearchInput = ({
             id={DETAIL_LEVELS.BRIEF}
             name="detailLevel"
             value={DETAIL_LEVELS.BRIEF}
-            checked={detailLevel === DETAIL_LEVELS.BRIEF}
-            onChange={handleDetailLevelChange}
+            checked={formData.detailLevel === DETAIL_LEVELS.BRIEF}
+            onChange={handleChange}
           />
           <p className="text-brown-dark">Brief</p>
         </label>
@@ -106,8 +107,8 @@ export const SearchInput = ({
             id={DETAIL_LEVELS.DETAILED}
             name="detailLevel"
             value={DETAIL_LEVELS.DETAILED}
-            checked={detailLevel === DETAIL_LEVELS.DETAILED}
-            onChange={handleDetailLevelChange}
+            checked={formData.detailLevel === DETAIL_LEVELS.DETAILED}
+            onChange={handleChange}
           />
           <p className="text-brown-dark">Detailed</p>
         </label>
